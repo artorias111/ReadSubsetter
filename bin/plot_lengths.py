@@ -3,6 +3,7 @@ import argparse
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np 
 
 def main():
     parser = argparse.ArgumentParser(description="Plot read length histograms before and after filtering.")
@@ -14,18 +15,18 @@ def main():
 
     print("Loading data...")
     df_all = pd.read_csv(args.lengths, sep='\t', names=['read', 'length'])
-    
     df_kept_ids = pd.read_csv(args.kept, names=['read'])
-    
     df_kept = df_all[df_all['read'].isin(df_kept_ids['read'])]
 
     print("Generating plot...")
     sns.set_theme(style="whitegrid")
     plt.figure(figsize=(10, 6))
 
+    common_bins = np.linspace(df_all['length'].min(), df_all['length'].max(), args.bins)
+
     sns.histplot(
         df_all['length'], 
-        bins=args.bins, 
+        bins=common_bins, 
         color='lightgray', 
         label='Before (All Reads)', 
         edgecolor=None,
@@ -34,7 +35,7 @@ def main():
 
     sns.histplot(
         df_kept['length'], 
-        bins=args.bins, 
+        bins=common_bins, 
         color='dodgerblue', 
         label='After (Trimmed)', 
         edgecolor=None,
@@ -44,9 +45,7 @@ def main():
     plt.title('Read Length Distribution: Before vs. After Trimming', fontsize=14, pad=15)
     plt.xlabel('Read Length (bp)', fontsize=12)
     plt.ylabel('Count', fontsize=12)
-    
     plt.gca().xaxis.set_major_formatter(plt.matplotlib.ticker.StrMethodFormatter('{x:,.0f}'))
-    
     plt.legend(frameon=True, fontsize=11)
     plt.tight_layout()
 

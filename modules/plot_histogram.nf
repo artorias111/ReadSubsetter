@@ -13,7 +13,7 @@ process PLOT_HISTOGRAM {
 
     script:
     """
-    plot_lengths.py \\
+    python ${projectDir}/bin/plot_lengths.py \\
         --lengths ${lengths_tsv} \\
         --kept ${keep_ids} \\
         --output ${sample_id}_length_histogram.png \\
