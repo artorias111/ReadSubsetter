@@ -1,15 +1,15 @@
 #!/usr/bin/env nextflow
 
-// Import modules
+nextflow.enable.dsl=2
+
 include { EXTRACT_LENGTHS } from './modules/extract_lengths.nf'
 include { FILTER_LOGIC    } from './modules/filter_logic.nf'
 include { SUBSET_READS    } from './modules/subset_reads.nf'
+include { PLOT_HISTOGRAM  } from './modules/plot_histogram.nf'
 
 workflow {
-    // Collect all input fastq.gz files into a single list
     ch_reads = Channel.fromPath(params.reads).collect()
 
-    // 1. Get lengths
     EXTRACT_LENGTHS(ch_reads)
 
     FILTER_LOGIC(
@@ -23,5 +23,12 @@ workflow {
         FILTER_LOGIC.out.keep_ids, 
         params.sample_id, 
         params.coverage
+    )
+
+    PLOT_HISTOGRAM(
+        EXTRACT_LENGTHS.out.lengths,
+        FILTER_LOGIC.out.keep_ids,
+        params.sample_id,
+        params.plot_bins
     )
 }

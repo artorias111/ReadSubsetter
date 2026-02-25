@@ -46,7 +46,7 @@ The internal Python script sorts the read lengths, computes a cumulative sum of 
 
 * Nextflow
 * Seqkit (https://bioinf.shenwei.me/seqkit/)
-* Python with Pandas (https://pandas.pydata.org/)
+* Python with Pandas, Matplotlib, and Seaborn for plotting read length distributions
 
 ## Directory Structure
 
