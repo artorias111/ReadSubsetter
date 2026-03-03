@@ -47,17 +47,15 @@ process FILTER_LOGIC {
             log.write(f"Histogram range (all reads): {min_len}-{max_len} bp\\n")
             log.write("Histogram range (kept reads): identical to all reads (no trimming applied).\\n")
             df['read'].to_csv('keep_reads.txt', index=False, header=False)
-            # Create empty short/long dropped files so downstream processes still run
             open('short_dropped_reads.txt', 'w').close()
             open('long_dropped_reads.txt', 'w').close()
             sys.exit(0)
     
         log.write(f"Excess bases to remove: {excess_len} bp\\n")
-    
+
         cutoff = excess_len / 2
         log.write(f"Target bases removed from each tail: {cutoff} bp.\\n")
     
-        # Trim from the short end first
         df_sorted = df.sort_values(by=['length'], ascending=True)
         df_sorted['cum_sum_asc'] = df_sorted['length'].cumsum()
         short_tail_removed = df_sorted[df_sorted['cum_sum_asc'] <= cutoff]
@@ -68,8 +66,7 @@ process FILTER_LOGIC {
             log.write(f"Reads up to ~{short_removed_max} bp were removed from the short end.\\n")
         else:
             log.write("No reads were removed from the short end.\\n")
-    
-        # Now trim from the long end within the remaining reads
+
         df_desc = short_tail_kept.sort_values(by=['length'], ascending=False)
         df_desc['cum_sum_desc'] = df_desc['length'].cumsum()
         long_tail_removed = df_desc[df_desc['cum_sum_desc'] <= cutoff]
@@ -92,8 +89,7 @@ process FILTER_LOGIC {
         log.write(f"  Longest kept read: {kept_max} bp\\n")
         log.write(f"  Histogram range (all reads): {min_len}-{max_len} bp\\n")
         log.write(f"  Histogram range (kept reads): {kept_min}-{kept_max} bp\\n")
-    
-    # Write ID lists for kept, short-dropped, and long-dropped reads
+
     final_df['read'].to_csv('keep_reads.txt', index=False, header=False)
     short_tail_removed['read'].to_csv('short_dropped_reads.txt', index=False, header=False)
     long_tail_removed['read'].to_csv('long_dropped_reads.txt', index=False, header=False)
