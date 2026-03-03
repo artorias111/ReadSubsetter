@@ -32,11 +32,10 @@ process FILTER_LOGIC {
     with open('filter_log.txt', 'w') as log:
         log.write("Read subsetting summary\\n")
         log.write("-----------------------\\n")
-        log.write(f"Input lengths file: {lengths_path}\\n")
         log.write(f"Requested coverage: {coverage}x\\n")
         log.write(f"Estimated genome size: {genome_size} bp\\n")
         log.write(f"Total bases in input: {total_len} bp\\n")
-        log.write(f"Target bases at requested coverage: {target_len} bp\\n")
+        log.write(f"Target bases at required coverage: {target_len} bp\\n")
         log.write(f"Shortest read in input: {min_len} bp\\n")
         log.write(f"Longest read in input: {max_len} bp\\n")
     
@@ -48,8 +47,7 @@ process FILTER_LOGIC {
             df['read'].to_csv('keep_reads.txt', index=False, header=False)
             sys.exit(0)
     
-        log.write("\\nReads were removed to bring the dataset down to the requested coverage.\\n")
-        log.write(f"Excess bases to remove: {excess_len} bp (split evenly between short and long reads).\\n")
+        log.write(f"Excess bases to remove: {excess_len} bp\\n")
     
         cutoff = excess_len / 2
         log.write(f"Target bases removed from each tail: {cutoff} bp.\\n")
