@@ -9,6 +9,8 @@ process FILTER_LOGIC {
     
     output:
     path "keep_reads.txt", emit: keep_ids
+    path "short_dropped_reads.txt", emit: short_ids
+    path "long_dropped_reads.txt", emit: long_ids
     path "filter_log.txt", emit: filter_log
     
     script:
@@ -45,6 +47,9 @@ process FILTER_LOGIC {
             log.write(f"Histogram range (all reads): {min_len}-{max_len} bp\\n")
             log.write("Histogram range (kept reads): identical to all reads (no trimming applied).\\n")
             df['read'].to_csv('keep_reads.txt', index=False, header=False)
+            # Create empty short/long dropped files so downstream processes still run
+            open('short_dropped_reads.txt', 'w').close()
+            open('long_dropped_reads.txt', 'w').close()
             sys.exit(0)
     
         log.write(f"Excess bases to remove: {excess_len} bp\\n")
@@ -88,6 +93,9 @@ process FILTER_LOGIC {
         log.write(f"  Histogram range (all reads): {min_len}-{max_len} bp\\n")
         log.write(f"  Histogram range (kept reads): {kept_min}-{kept_max} bp\\n")
     
+    # Write ID lists for kept, short-dropped, and long-dropped reads
     final_df['read'].to_csv('keep_reads.txt', index=False, header=False)
+    short_tail_removed['read'].to_csv('short_dropped_reads.txt', index=False, header=False)
+    long_tail_removed['read'].to_csv('long_dropped_reads.txt', index=False, header=False)
     """
 }

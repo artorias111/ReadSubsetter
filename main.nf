@@ -19,9 +19,11 @@ workflow {
     )
 
     SUBSET_READS(
-        ch_reads, 
-        FILTER_LOGIC.out.keep_ids, 
-        params.sample_id, 
+        ch_reads,
+        FILTER_LOGIC.out.keep_ids,
+        FILTER_LOGIC.out.short_ids,
+        FILTER_LOGIC.out.long_ids,
+        params.sample_id,
         params.coverage
     )
 
