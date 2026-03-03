@@ -53,5 +53,5 @@ The internal Python script sorts the read lengths, computes a cumulative sum of 
 * `main.nf`: The main entry point for the pipeline.
 * `nextflow.config`: Configuration file containing parameters and Conda environment definitions.
 * `modules/extract_lengths.nf`: Extracts read IDs and lengths using `seqkit`.
-* `modules/filter_logic.nf`: Python script that calculates cumulative sums and identifies reads to keep. 
-* `modules/subset_reads.nf`: Extracts the final set of reads using `seqkit grep`.
+* `modules/filter_logic.nf`: Python script that calculates cumulative sums, identifies reads to keep, and writes a `filter_log.txt` with cutoff and coverage statistics.
+* `modules/subset_reads.nf`: Extracts the final set of reads using `seqkit grep`, writing both the kept reads (`<sample_id>.final.<coverage>x.fq.gz`) and the dropped reads (`<sample_id>.dropped.<coverage>x.fq.gz`).

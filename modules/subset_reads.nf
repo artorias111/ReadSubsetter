@@ -10,9 +10,11 @@ process SUBSET_READS {
 
     output:
     path "${sample_id}.final.${coverage}x.fq.gz", emit: final_reads
+    path "${sample_id}.dropped.${coverage}x.fq.gz", emit: dropped_reads
 
     script:
     """
     seqkit grep -f ${keep_ids} ${reads} -o ${sample_id}.final.${coverage}x.fq.gz
+    seqkit grep -v -f ${keep_ids} ${reads} -o ${sample_id}.dropped.${coverage}x.fq.gz
     """
 }
